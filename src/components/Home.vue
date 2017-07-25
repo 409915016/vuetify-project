@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-layout row wrap >
+    <v-layout row wrap>
       <v-flex xs12 sm6 class="text-xs-center text-sm-right">
         <v-btn large router to="/meetups" class="info">Explore Meetups</v-btn>
       </v-flex>
@@ -11,8 +11,10 @@
 
     <v-layout row wrap class="mt-2">
       <v-flex xs12>
-        <v-carousel>
-          <v-carousel-item v-for="meetup in meetups" :src="meetup.imageUrl" :key="meetup.id">
+        <v-carousel style="cursor: pointer">
+          <v-carousel-item v-for="meetup in meetups" :src="meetup.imageUrl" :key="meetup.id"
+                           @click="onloadMeetup"
+          >
             <div class="title">{{ meetup.title }}</div>
           </v-carousel-item>
         </v-carousel>
@@ -46,6 +48,11 @@
             title: 'Meetup in 2'
           }
         ]
+      }
+    },
+    methods: {
+      onloadMeetup (id) {
+        this.$router.push('meetups/' + id)
       }
     }
   }
