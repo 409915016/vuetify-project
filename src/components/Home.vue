@@ -34,20 +34,9 @@
 
 <script>
   export default {
-    data () {
-      return {
-        meetups: [
-          {
-            imageUrl: 'http://att.bbs.duowan.com/forum/201608/26/043824v0tax8xt8tqhv7bl.jpg',
-            id: '1',
-            title: 'Meetup in New York'
-          },
-          {
-            imageUrl: 'http://pic1.win4000.com/wallpaper/b/589d620792a84.jpg',
-            id: '2',
-            title: 'Meetup in 2'
-          }
-        ]
+    computed: {
+      meetups () {
+        return this.$store.getters.featureMeetups
       }
     },
     methods: {
