@@ -5,7 +5,6 @@
         <v-card class="info" >
           <v-container>
             <v-layout row>
-
               <v-flex xs5 sm4 md3>
                 <v-card-media
                   :src="meetup.imageUrl"
