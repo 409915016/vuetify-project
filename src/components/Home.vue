@@ -13,7 +13,8 @@
       <v-flex xs12>
         <v-carousel style="cursor: pointer">
           <v-carousel-item v-for="meetup in meetups" :src="meetup.imageUrl" :key="meetup.id"
-                           @click="onloadMeetup"
+                           @click="onloadMeetup(meetup.id)"
+
           >
             <div class="title">{{ meetup.title }}</div>
           </v-carousel-item>
@@ -22,7 +23,7 @@
     </v-layout>
 
     <v-layout row wrap class="mt-2">
-      <v-flex xs12 sm12 class="text-xs-center ">
+      <v-flex xs12 sm12 class="text-xs-center">
         <p>Join our awesome meetups!</p>
 
       </v-flex>
