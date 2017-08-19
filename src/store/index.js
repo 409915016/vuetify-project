@@ -29,6 +29,9 @@ export const store = new Vuex.Store({
     error: null
   },
   mutations: {
+    setLoadedMeetups (state, payload) {
+      state.loadedMeetups = payload
+    },
     createMeetup (state, payload) {
       state.loadedMeetups.push(payload)
     },
@@ -46,19 +49,56 @@ export const store = new Vuex.Store({
     }
   },
   actions: {
+    loadMeetups ({commit}) {
+      commit('setLoading', true)
+      firebase.database().ref('meetups').once('value')
+        .then(data => {
+          console.log(data)
+          console.log(data.val())
+          const meetups = []
+          const obj = data.val()
+          for (let key in obj) {
+            meetups.push({
+              id: key,
+              title: obj[key].title,
+              description: obj[key].description,
+              location: obj[key].location,
+              date: obj[key].date,
+              imageUrl: obj[key].imageUrl
+            })
+          }
+          commit('setLoadedMeetups', meetups)
+          commit('setLoading', false)
+        })
+        .catch(error => {
+          console.log(error)
+          commit('setLoading', true)
+        })
+    },
     createMeetup ({commit}, payload) {
       const meetup = {
         title: payload.title,
         location: payload.location,
         imageUrl: payload.imageUrl,
         description: payload.description,
-        date: payload.date,
-        id: '46546546'
+        date: payload.date.toISOString()
       }
+      firebase.database().ref('meetups').push(meetup)
+        .then((data) => {
+          const key = data.key
+          commit('createMeetup', {
+            ...meetup,
+            id: key
+          })
+          console.log(data)
+        })
+        .catch(error => {
+          console.log(error)
+        })
       // Reach out firebase and store it
-      commit('createMeetup', meetup)
+      // commit('createMeetup', meetup)
     },
-    signUserUp ({ commit }, payload) {
+    signUserUp ({commit}, payload) {
       commit('setLoading', true)
       commit('clearError')
       firebase.auth().createUserWithEmailAndPassword(payload.email, payload.password)
@@ -71,12 +111,7 @@ export const store = new Vuex.Store({
             }
             commit('setUser', newUser)
           }
-        ).catch(
-          error => {
-            commit('setLoading', false)
-            commit('setError', error)
-            console.log(error)
-          })
+        ).catch()
     },
     signUserIn ({commit}, payload) {
       commit('setLoading', true)
