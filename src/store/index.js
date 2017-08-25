@@ -53,8 +53,6 @@ export const store = new Vuex.Store({
       commit('setLoading', true)
       firebase.database().ref('meetups').once('value')
         .then(data => {
-          console.log(data)
-          console.log(data.val())
           const meetups = []
           const obj = data.val()
           for (let key in obj) {
@@ -62,7 +60,6 @@ export const store = new Vuex.Store({
               id: key,
               title: obj[key].title,
               description: obj[key].description,
-              location: obj[key].location,
               date: obj[key].date,
               imageUrl: obj[key].imageUrl,
               creatorId: obj[key].creatorId
@@ -80,19 +77,37 @@ export const store = new Vuex.Store({
       const meetup = {
         title: payload.title,
         location: payload.location,
-        imageUrl: payload.imageUrl,
         description: payload.description,
         date: payload.date.toISOString(),
         creatorId: getters.user.id
       }
+      let imageUrl
+      let key
       firebase.database().ref('meetups').push(meetup)
         .then((data) => {
-          const key = data.key
+          console.log(data)
+          key = data.key
+          return key
+        })
+        .then(key => {
+          console.log(key)
+          const filename = payload.image.name
+          const ext = filename.slice(filename.lastIndexOf('.'))
+          return firebase.storage().ref('meetups/' + key + '.' + ext).put(payload.image)
+        })
+        .then(fileData => {
+          console.log(fileData)
+          console.log(key)
+          imageUrl = fileData.metadata.downloadURLs[0]
+          return firebase.database().ref('meetups').child(key).update({imageUrl: imageUrl})
+        })
+        .then(() => {
+          console.log(imageUrl)
           commit('createMeetup', {
             ...meetup,
+            imageUrl: imageUrl,
             id: key
           })
-          console.log(data)
         })
         .catch(error => {
           console.log(error)
@@ -151,7 +166,7 @@ export const store = new Vuex.Store({
         return meetupA.date > meetupB.date
       })
     },
-    featureMeetups (state, geeters) {
+    featuredMeetups (state, geeters) {
       return geeters.loadedMeetups.slice(0, 5)
     },
     loadedMeetup (state) {

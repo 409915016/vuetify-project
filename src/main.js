@@ -23,7 +23,7 @@ new Vue({
       authDomain: 'vue-test-e7efb.firebaseapp.com',
       databaseURL: 'https://vue-test-e7efb.firebaseio.com',
       projectId: 'vue-test-e7efb',
-      storageBucket: ''
+      storageBucket: 'gs://vue-test-e7efb.appspot.com'
     })
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {

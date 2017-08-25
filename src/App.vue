@@ -45,7 +45,6 @@
           {{ item.title }}
         </v-btn>
 
-
         <v-btn v-if="userIsAuthenticated"
                flat
                @click="onLogout"
