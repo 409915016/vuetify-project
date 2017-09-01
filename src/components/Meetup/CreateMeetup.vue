@@ -3,7 +3,6 @@
     <v-layout row>
       <v-flex xs12 sm6 offset-sm3>
         <h4 class="">Create a new Meetup</h4>
-
       </v-flex>
     </v-layout>
     <v-layout row>
